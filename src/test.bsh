@@ -1,0 +1,16 @@
+print("Inicializando el script");
+
+source("config/config.bsh");
+
+addLayer("pepe");
+addLayer();
+addLayer();
+addLayer();
+addLayer();
+addLayer();
+addLayer();
+for (String key: capas.keys()) {
+	print(capas.get(key).layerName);
+}
+
+print("Finalizando el script");

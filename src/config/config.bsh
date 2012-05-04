@@ -1,0 +1,49 @@
+print("[CREANDO TIPOS DE OBJETOS]");
+
+layer() {
+	String layerName="";
+	return this;
+}
+
+point() {
+	int coord_x;
+	int coord_y;
+	return this;
+}
+
+print("[CREANDO ESTRUCTURAS EN MEMORIA]");
+
+capas = new Hashtable();
+lineas = new Hashtable();
+polilineas = new Hashtable();
+puntos = new Hashtable();
+
+print("[CONFIGURANDO METODOS]");
+
+addLayer() {
+	randomGenerator = new Random();
+	num = null;
+	while (num == null) {
+		num = randomGenerator.nextInt(3);
+		nombreCapa = "capa_" + num;
+		if (capas.containsKey(nombreCapa)) {
+			print("**** CAPA YA EXISTENTE - " + nombreCapa + " ****");
+			num = null;
+		}
+		else {
+			print("**** AÑADIDA CAPA - " + nombreCapa + " ****");
+		}
+	}
+	return;
+}
+
+addLayer(nombre) {
+	capa = layer();
+	capa.layerName = nombre;
+	capas.put(nombre,capa);
+	print("**** AÑADIDA CAPA - " + nombre + " ****");
+	return;
+}  
+
+
+print("[LIBERANDO ESTRUCTURAS EN MEMORIA]");
