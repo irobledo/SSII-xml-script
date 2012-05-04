@@ -2,15 +2,69 @@ print("Inicializando el script");
 
 source("config/config.bsh");
 
-addLayer("pepe");
-addLayer();
-addLayer();
-addLayer();
-addLayer();
-addLayer();
-addLayer();
+// *************************************************************
+// CONFIGURANDO EL TAMAÑO MAXIMO DEL PLANO
+// *************************************************************
+
+setMaxCoord(500,500);
+
+// *************************************************************
+// * SECCION QUE CREA LAS CAPAS DEL MAPA
+// * DOS METODOS:
+// * CON NOMBRE - CREA LA CAPA CON EL NOMBRE INDICADO. SI EXISTE
+// * DEVUELVE MENSAJE INDICANDO QUE NO SE HA PODIDO CREAR.
+// *
+// * SIN NOMBRE - CREA UNA CAPA CON UN NOMBRE AUTOMATICO-ALEATORIO. OJO QUE
+// * ESTE PROCESO PUEDE QUEDAR EN UN BUCLE INFINITO SI AGOTA EL NUMERO
+// * MAXIMO DE CAPAS (10000).
+// *************************************************************
+
+addLayer("terreno");
+addLayer("tendido-electrico");
+addLayer("instalaciones");
+addNLayer(1);
+addNLayer(1);
+addNLayer(1);
+addNLayer(1);
+addNLayer(1);
+addNLayer(1);
+addNLayer(1);
+addLayer("tendido-electrico");
+addNLayer(1);
+addNLayer(1);
+addNLayer(50);
+
+// *************************************************************
+// * SECCION QUE CREA LAS LINEAS DEL MAPA
+// *************************************************************
+
+addLine(0,0,15,15,"tendido-electrico");
+addLine(-1,0,15,15,"tendido-electrico");
+addLine(20,30,45,10);
+addLine(30,505,45,10);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(1);
+addLine(200);
+
+// ************************************************************
+// * LISTAMOS OBJETOS DEL PLANO
+// ************************************************************
+
+print ("## Mostramos los objetos del plano ##");
+
 for (String key: capas.keys()) {
-	print(capas.get(key).layerName);
+	c = capas.get(key);
+	print("CAPA: " + c.layerName);
+	
+	for (Object l: c.lineas) {
+		print("LINEA: (" +  l.coord_x1 + "," + l.coord_y1 + "," + l.coord_x2 + "," + l.coord_y2 + ")");
+	}
 }
 
 print("Finalizando el script");

@@ -2,16 +2,30 @@ print("[CREANDO TIPOS DE OBJETOS]");
 
 layer() {
 	String layerName="";
+	Vector lineas = new Vector();
 	return this;
 }
 
-point() {
-	int coord_x;
-	int coord_y;
+line() {
+	int coord_x1;
+	int coord_y1;
+	int coord_x2;
+	int coord_y2;
 	return this;
+}
+
+poliline() {
+	Vector lineSet = new Vector(line);
+	return this;	
 }
 
 print("[CREANDO ESTRUCTURAS EN MEMORIA]");
+
+// Coordenadas maximas que admite el plano. 
+// Pueden ser modificadas con uno de los metodos proporcionados.
+
+int max_x = 10000;
+int max_y = 10000;
 
 capas = new Hashtable();
 lineas = new Hashtable();
@@ -20,30 +34,121 @@ puntos = new Hashtable();
 
 print("[CONFIGURANDO METODOS]");
 
-addLayer() {
-	randomGenerator = new Random();
-	num = null;
-	while (num == null) {
-		num = randomGenerator.nextInt(3);
-		nombreCapa = "capa_" + num;
-		if (capas.containsKey(nombreCapa)) {
-			print("**** CAPA YA EXISTENTE - " + nombreCapa + " ****");
-			num = null;
-		}
-		else {
-			print("**** AÑADIDA CAPA - " + nombreCapa + " ****");
-		}
+setMaxCoord(x,y) {
+	if (x>0 && y > 0) {
+		max_x = x;
+		max_y = y;
+		print("**** CONFIGURADAS LAS COORDENADAS MAXIMAS DEL PLANO ****");		
+	}
+	else {
+		print("**** NO HA SIDO POSIBLE CONFIGURAR LAS COORDENADAS MAXIMAS DEL PLANO ****");
+		print("**** UTILIZANDO CONFIGURACION POR DEFECTO ****");
 	}
 	return;
 }
 
-addLayer(nombre) {
+addNLayer(num_capas) {
+	randomGenerator = new Random();
+	i = 0;
+	while (i<= num_capas) {
+		num = null;
+		while (num == null) {
+			num = randomGenerator.nextInt(10000);
+			nombreCapa = "capa_" + num;
+			for (String key: capas.keys()) {
+				if (key.compareTo(nombreCapa) == 0) {
+					print("**** CAPA YA EXISTENTE - " + nombreCapa + " ****");
+					num = null;
+				}
+			}
+		}
+		capa = layer();
+		capa.layerName = nombreCapa;
+		capas.put(nombreCapa,capa);
+		print("**** AÑADIDA CAPA - " + nombreCapa + " ****");
+		i = i + 1;
+	}	
+	return;
+}
+
+addLayer(nombreCapa) {
+	for (String key: capas.keys()) {
+		if (key.compareTo(nombreCapa) == 0) {
+			print("**** CAPA YA EXISTENTE - " + nombreCapa + " ****");
+			return;
+		}
+	}
+
 	capa = layer();
-	capa.layerName = nombre;
-	capas.put(nombre,capa);
-	print("**** AÑADIDA CAPA - " + nombre + " ****");
+	capa.layerName = nombreCapa;
+	capas.put(nombreCapa,capa);
+	print("**** AÑADIDA CAPA - " + nombreCapa + " ****");
 	return;
 }  
 
+addLine(x1,y1,x2,y2,nombreCapa) {
+	if (x1 < 0 || y1 < 0 || x2 < 0 || y2 <0) {
+		print("**** NO HA SIDO POSIBLE AÑADIR LA LINEA A CAPA ****");
+		print("**** COORDENADAS NEGATIVAS ****");
+		return;
+	}
 
-print("[LIBERANDO ESTRUCTURAS EN MEMORIA]");
+	if (x1 > max_x || y1 > max_y || x2 > max_x || y2 > max_y) {
+		print("**** NO HA SIDO POSIBLE AÑADIR LA LINEA A CAPA ****");
+		print("**** COORDENADAS FUERA DEL TAMAÑO DEL MAPA ****");
+		return;
+	}
+			
+	l = line();
+	l.coord_x1 = x1;
+	l.coord_y1 = y1;
+	l.coord_x2 = x2;
+	l.coord_y2 = y2;
+	  
+	for (String key: capas.keys()) {
+		if (key.compareTo(nombreCapa) == 0) {
+			c = capas.get(key);
+			c.lineas.add(l);
+			print("**** LINEA AÑADIDA A CAPA: - " + nombreCapa + "-" + x1 + "," + y1 + "," + x2 + "," + y2 + "****");
+			return;
+		}
+	}
+	print("**** NO HA SIDO POSIBLE AÑADIR LA LINEA A CAPA ****");
+	return;
+}
+
+addLine(x1,y1,x2,y2) {
+	num_capas = capas.size();
+	if (num_capas < 1) {
+		print("**** NO HA SIDO POSIBLE AÑADIR LA LINEA A CAPA ****");
+		return;
+	}
+	randomGenerator = new Random();
+	num = randomGenerator.nextInt(num_capas);
+	if (num == 0) {
+		print("**** NO HA SIDO POSIBLE AÑADIR LA LINEA A CAPA ****");
+		return;
+	}
+	i = 1;
+	for (String key: capas.keys()) {
+		if (i == num) {
+			return addLine(x1,y1,x2,y2,key);
+		}
+		i = i + 1;
+	}
+	return;
+}
+
+addLine(num) {
+	randomGenerator = new Random();
+	i = 0;
+	while (i<= num) {
+		x1 = randomGenerator.nextInt(max_x);
+		x2 = randomGenerator.nextInt(max_x);
+		y1 = randomGenerator.nextInt(max_y);
+		y2 = randomGenerator.nextInt(max_y);
+		addLine(x1,y1,x2,y2);
+		i = i + 1;
+	}
+	return;
+}
