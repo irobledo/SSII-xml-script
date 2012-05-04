@@ -1,3 +1,10 @@
+print("[IMPORTACIONES DE LIBRERIAS]");
+
+import java.io.FileWriter;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.namespace.QName;
+
 print("[CREANDO TIPOS DE OBJETOS]");
 
 layer() {
@@ -150,5 +157,28 @@ addLine(num) {
 		addLine(x1,y1,x2,y2);
 		i = i + 1;
 	}
+	return;
+}
+
+crearXML(nombreFichero) {
+	String fileName = nombreFichero + ".xml";
+	
+	XMLOutputFactory xof = XMLOutputFactory.newInstance();
+    XMLStreamWriter xtw = null;
+    xtw = xof.createXMLStreamWriter(new FileWriter(fileName));
+    
+    xtw.setDefaultNamespace("http://www.fi.upm.es/ssii/dwgparser");
+    
+    xtw.writeComment("Fichero de pruebas del formato de intercambio definido");
+    xtw.newLine();
+    xtw.writeComment("para el DWG parser");
+    
+    xtw.newLine();
+    xtw.writeStartElement("plano");
+    xtw.newLine();
+    xtw.writeEndElement();
+
+	xtw.flush();
+    xtw.close();   
 	return;
 }

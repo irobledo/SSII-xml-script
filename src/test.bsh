@@ -67,4 +67,7 @@ for (String key: capas.keys()) {
 	}
 }
 
+print ("## Generamos el fichero XML ##");
+crearXML("prueba");
+
 print("Finalizando el script");
