@@ -1,9 +1,20 @@
 print("[IMPORTACIONES DE LIBRERIAS]");
 
 import java.io.FileWriter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamWriter;
-import javax.xml.namespace.QName;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.OutputKeys;
+
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 print("[CREANDO TIPOS DE OBJETOS]");
 
@@ -162,23 +173,56 @@ addLine(num) {
 
 crearXML(nombreFichero) {
 	String fileName = nombreFichero + ".xml";
-	
-	XMLOutputFactory xof = XMLOutputFactory.newInstance();
-    XMLStreamWriter xtw = null;
-    xtw = xof.createXMLStreamWriter(new FileWriter(fileName));
-    
-    xtw.setDefaultNamespace("http://www.fi.upm.es/ssii/dwgparser");
-    
-    xtw.writeComment("Fichero de pruebas del formato de intercambio definido");
-    xtw.newLine();
-    xtw.writeComment("para el DWG parser");
-    
-    xtw.newLine();
-    xtw.writeStartElement("plano");
-    xtw.newLine();
-    xtw.writeEndElement();
+	Calendar calendar = new GregorianCalendar();
 
-	xtw.flush();
-    xtw.close();   
+	DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+	DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	Document doc = docBuilder.newDocument();
+	
+	// *********************************************
+	// Elemento raiz. PLANO
+	// *********************************************
+	
+	Element rootElement = doc.createElement("plano");
+	doc.appendChild(rootElement);
+	
+	Attr attr = doc.createAttribute("nombre_fichero");
+	attr.setValue("Fichero generado para pruebas sin plano");
+	rootElement.setAttributeNode(attr);
+	
+	Attr attr = doc.createAttribute("fecha_fichero");
+	attr.setValue("dd/mm/yyyy");
+	rootElement.setAttributeNode(attr);
+	
+	Attr attr = doc.createAttribute("fecha_procesamiento");
+	attr.setValue(
+		calendar.get(Calendar.DATE).toString() + "/" +
+		calendar.get(Calendar.MONTH).toString() + "/" +
+		calendar.get(Calendar.YEAR).toString() + " " +
+		calendar.get(Calendar.HOUR_OF_DAY).toString() + ":" +
+		calendar.get(Calendar.MINUTE).toString() + ":" +
+		calendar.get(Calendar.SECOND).toString()
+	);
+	rootElement.setAttributeNode(attr);
+	
+	// *********************************************
+	// NODO HIJO: elemento_simulacion
+	// *********************************************
+	
+	Element elemento_simulacion = doc.createElement("elemento_simulacion");
+	Attr attr = doc.createAttribute("tipo_elemento");
+	attr.setValue("elemento_original_mapa");
+	elemento_simulacion.setAttributeNode(attr);
+	rootElement.appendChild(elemento_simulacion);
+	
+	
+	// VOLCAMOS LA SALIDA AL FICHERO XML.
+	TransformerFactory transformerFactory = TransformerFactory.newInstance();
+	Transformer transformer = transformerFactory.newTransformer();
+	transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+	DOMSource source = new DOMSource(doc);
+	StreamResult result = new StreamResult(new File(fileName));
+	transformer.transform(source, result);
+
 	return;
 }
